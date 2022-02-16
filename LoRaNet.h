@@ -7,8 +7,6 @@
 #ifndef LORAMESH_H
 #define LORAMESH_H
 
-// TODO: debug mode 
-
 #include <Arduino.h>
 #include <SPI.h>
 #include "LoRa.h"

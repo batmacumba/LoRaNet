@@ -7,7 +7,7 @@
 #include "LoRaNetSwitch.h"
 #include "LoRaNetRouter.h"
 #include "LoRaNet.h"
-#include "util/libcc/list.h"
+#include "util/list.h"
 
 #define             MAX_ACK_INTERVAL        600   
 #define             ACK_LISTEN_INTERVAL     300

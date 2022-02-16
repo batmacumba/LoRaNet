@@ -1,12 +1,31 @@
+/*
+  hash.h
+  Created by Bruno Carneiro
+  Released into the public domain
+*/
+
+/* ifndef guard */
+#ifndef _HASH_H_
+#define _HASH_H_
+
+/* ESTRUTURAS DE DADOS */
+typedef struct entry_s entry_t;
+typedef struct hashtable_s hashtable_t;
+
+/* FUNÇÕES */
+hashtable_t* ht_create(int size);					            // construtor
+void ht_set(hashtable_t *hashtable, char *key, void *value);	// seta uma entr
+void* ht_get(hashtable_t* hashtable, char* key);                // get celula
+void* ht_get_random(hashtable_t* hashtable);	                // get rand cel
+entry_t* ht_get_kth(hashtable_t* hashtable, int k);	            // get kth entry
+entry_t* ht_get_next(hashtable_t* hashtable, entry_t* pair);	// get next entr
+void* ht_get_value(hashtable_t* hashtable, entry_t* pair);		// get pair->val
+char* ht_get_key(hashtable_t* hashtable, entry_t* pair);	    // get pair->key
+int ht_get_size(hashtable_t* hashtable);			            // get ht->size
+
 /*******************************************************************************
 INCLUDES E MACROS
 ******************************************************************************/
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
-#include "hash.h"
 
 #define _XOPEN_SOURCE 500 	 // enable strdup on linux
 
@@ -30,18 +49,18 @@ FUNÇÕES
 ******************************************************************************/
 
 /* Inicialização da tabela */
-hashtable_t *ht_create(int size) {
+inline hashtable_t *ht_create(int size) {
 
 	if (size < 1)
 	return NULL;
 	hashtable_t *hashtable = NULL;
 
 	/* Tentativa de alocação de memória para a estrutura da tabela */
-	if ((hashtable = malloc(sizeof(hashtable_t))) == NULL)
+	if ((hashtable = (hashtable_t *) malloc(sizeof(hashtable_t))) == NULL)
 	return NULL;
 
 	/* Tentativa de alocação da tabela em si */
-	if ((hashtable->table = malloc(sizeof(entry_t*) * size)) == NULL)
+	if ((hashtable->table = (entry_s **) malloc(sizeof(entry_t*) * size)) == NULL)
 	return NULL;
 
 	/* Inicialização dos elementos da tabela */
@@ -54,7 +73,7 @@ hashtable_t *ht_create(int size) {
 }
 
 /* Função de hashing */
-int ht_hash(hashtable_t *hashtable, char *key) {
+inline int ht_hash(hashtable_t *hashtable, char *key) {
 
 	unsigned long int hashval = 0;
 	int i = 0;
@@ -71,14 +90,14 @@ int ht_hash(hashtable_t *hashtable, char *key) {
 }
 
 /* Cria um par chave-valor */
-entry_t *ht_newpair(char *key, void *value) {
+inline entry_t *ht_newpair(char *key, void *value) {
 
 	entry_t *newpair;
 
-	if ((newpair = malloc(sizeof(entry_t))) == NULL)
+	if ((newpair = (entry_t *) malloc(sizeof(entry_t))) == NULL)
 	return NULL;
 
-	newpair->key = malloc((strlen(key) + 1) * sizeof(char));
+	newpair->key = (char *) malloc((strlen(key) + 1) * sizeof(char));
 	if (newpair->key == NULL) {
 		free (newpair);
 		return NULL;
@@ -94,7 +113,7 @@ entry_t *ht_newpair(char *key, void *value) {
 }
 
 /* Insere um par chave-valor na hashtable */
-void ht_set(hashtable_t *hashtable, char *key, void *value) {
+inline void ht_set(hashtable_t *hashtable, char *key, void *value) {
 
 	int hashval = ht_hash(hashtable, key);
 	entry_t *newpair = NULL;
@@ -132,7 +151,7 @@ void ht_set(hashtable_t *hashtable, char *key, void *value) {
 }
 
 /* Recupera uma tupla chave-valor da hashtable */
-void *ht_get(hashtable_t *hashtable, char* key) {
+inline void *ht_get(hashtable_t *hashtable, char* key) {
 
 	unsigned int hashval = ht_hash(hashtable, key);
 	entry_t *pair;
@@ -147,7 +166,7 @@ void *ht_get(hashtable_t *hashtable, char* key) {
 }
 
 /* Recupera uma tupla chave-valor aleatória da hashtable */
-void *ht_get_random(hashtable_t *hashtable) {
+inline void *ht_get_random(hashtable_t *hashtable) {
 
 	/* variáveis temporárias pra receber os valores */
 	unsigned int hashval;
@@ -171,26 +190,28 @@ void *ht_get_random(hashtable_t *hashtable) {
 }
 
 /* Recupera o k-ésimo par de uma hashtable */
-entry_t *ht_get_kth(hashtable_t *hashtable, int k) {
+inline entry_t *ht_get_kth(hashtable_t *hashtable, int k) {
 	return hashtable->table[k];
 }
 
 /* Recupera o próximo par na lista ligada */
-entry_t *ht_get_next(hashtable_t *hashtable, entry_t *pair) {
+inline entry_t *ht_get_next(hashtable_t *hashtable, entry_t *pair) {
 	return pair->next;
 }
 
 /* Recupera valor do par */
-void *ht_get_value(hashtable_t *hashtable, entry_t *pair) {
+inline void *ht_get_value(hashtable_t *hashtable, entry_t *pair) {
 	return pair->value;
 }
 
 /* Recupera chave do par */
-char *ht_get_key(hashtable_t *hashtable, entry_t *pair) {
+inline char *ht_get_key(hashtable_t *hashtable, entry_t *pair) {
 	return pair->key;
 }
 
 /* Recupera tamanho da hashtable */
-int ht_get_size(hashtable_t *hashtable) {
+inline int ht_get_size(hashtable_t *hashtable) {
 	return hashtable->size;
 }
+
+#endif /* _HASH_H_ */

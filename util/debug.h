@@ -1,3 +1,9 @@
+/*
+  debug.h
+  Created by Bruno Carneiro
+  Released into the public domain
+*/
+
 #ifndef DEBUG_H
 #define DEBUG_H
 

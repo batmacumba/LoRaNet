@@ -11,7 +11,7 @@
 #include <SPI.h>
 #include "LoRa.h"
 #include "util/headers.h"
-#include "util/libcc/hash.h"
+#include "util/hash.h"
 #include "util/debug.h"
 #include "util/error.h"
 

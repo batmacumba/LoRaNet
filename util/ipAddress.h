@@ -1,3 +1,9 @@
+/*
+  ipAddress.h
+  Created by Bruno Carneiro
+  Released into the public domain
+*/
+
 #ifndef IP_ADDRESS_H
 #define IP_ADDRESS_H
 

@@ -1,3 +1,9 @@
+/*
+  headers.h
+  Created by Bruno Carneiro
+  Released into the public domain
+*/
+
 #ifndef HEADERS_H
 #define HEADERS_H
 

@@ -1,3 +1,9 @@
+/*
+  eeprom.h
+  Created by Bruno Carneiro
+  Released into the public domain
+*/
+
 #ifndef EEPROM_H
 #define EEPROM_H
 

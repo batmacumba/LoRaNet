@@ -6,7 +6,7 @@
 
 #include "LoRaNetRouter.h"
 #include "LoRaNetSwitch.h"
-#include "util/libcc/list.h"
+#include "util/list.h"
 
 static uint8_t          broadcastAddr[4] = {10, 255, 255, 255};
 static uint8_t          thisNodeAddr[4];

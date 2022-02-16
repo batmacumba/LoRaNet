@@ -1,11 +1,8 @@
-/*******************************************************************************
- * List: python-like implementation of a list.
- * Dependencies: stdio.h, stdlib.h, string.h
- * Compilation:
-     $ make list.o
-     $ gcc file.c list.o -o file
- * Include this header in your file
- ******************************************************************************/
+/*
+  list.h
+  Created by Bruno Carneiro
+  Released into the public domain
+*/
 
 #ifndef _LIST_H_
 #define _LIST_H_
