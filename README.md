@@ -9,7 +9,7 @@ At the moment this project is only compatible with the _Heltec WiFi LoRa 32 (V2)
 
 ## Getting Started
 
-Upload the [example sketch](src/node/node.ino) provided to your board using the Arduino IDE.
+Upload the [example sketch](examples/sender/sender.ino) provided to your board using the Arduino IDE.
 
 ## Contributing
 
