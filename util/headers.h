@@ -9,8 +9,10 @@
 
 #define     INITIAL_TTL       64
 // TODO: subtract LORA_MAX_LEN from headers to obtain new PAYLOAD_MAX_LEN
-#define     PAYLOAD_MAX_LEN   128
+// #define     PAYLOAD_MAX_LEN   128
+#define     PAYLOAD_MAX_LEN   229
 #define     LORA_MAX_LEN   256
+// headder maz length 27 so payload max length = 256-27 = 229
 
 #define     CONTROL           1
 #define     DATA              2

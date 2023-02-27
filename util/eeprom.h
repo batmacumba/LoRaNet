@@ -11,7 +11,9 @@
 #include "debug.h"
 #include "ipAddress.h" 
 
-#define EEPROM_SIZE		4096
+// esp32 eeprom size = 512
+// #define EEPROM_SIZE		4096
+#define EEPROM_SIZE     512
 #define EEPROM_FLAG		"LoRaMe2h"
 #define FLAG_LENGTH		9
 
