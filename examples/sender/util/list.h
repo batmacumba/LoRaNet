@@ -69,7 +69,7 @@ static int
 list_resize(List *l, int new_allocated, int flag) 
 {
     void **new_items = (void **) calloc((size_t) new_allocated, sizeof(void *));
-    Serial.printf("CHECKPOINT !!!!!!!!!!!!!");
+    
     if (flag == APPEND)
         memcpy(new_items, l -> items, l -> allocated * sizeof(void *));
     /* prepend allocates and copies to the middle of the new block */

@@ -1,16 +1,27 @@
-#include <LoRaNet.h>
+#include "LoRaNet.h"
+#include "boards.h"
 
 #define BAND    433E6 
 
 int i = 0;
 unsigned long lastSentMsgTS = 0;
 unsigned long lastMemoryCheckedTS = 0;
+// int serial_putchar(char c, FILE* f) {
+//     if (c == '\n') serial_putchar('\r', f);
+//     return Serial.write(c) == 1? 0 : 1;
+// }
+// FILE serial_stdout;
 
 void 
 setup()
 {
-    Serial.begin(115200);
+    initBoard();
+    // Serial.begin(115200);
+    // fdev_setup_stream(&serial_stdout, serial_putchar, NULL, _FDEV_SETUP_WRITE);
+    // stdout = &serial_stdout;
+    Serial.printf("This is a checkpoint1");
     LoRaNet.begin(BAND);
+    Serial.printf("This is a checkpoint8\n");
     LoRaNet.onReceive(handleMessage);
 
 }
