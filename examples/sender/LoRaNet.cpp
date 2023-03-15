@@ -64,7 +64,6 @@ LoRaNetClass::handlePacket(int packetSize)
 int
 LoRaNetClass::begin(long frequency)
 {
-    Serial.printf("This is a checkpoint2\n");
     // TODO: return SUCCESS or FAIL
     // LoRa radio setup
     SPI.begin(SCK,MISO,MOSI,SS);
@@ -90,21 +89,18 @@ LoRaNetClass::begin(long frequency)
 
     if (eepromConfigured()) eepromRead(thisNodeAddr);
     else eepromSetup(thisNodeAddr);
-    Serial.printf("This is a checkpoint3\n");
     for (int i=0; i<4; i++){
       Serial.printf("%u.", thisNodeAddr[i]);
     }
     Serial.printf("\n%u\n", thisNodeAddr);
     LoRaNetSwitch.begin(thisNodeAddr);
-    Serial.printf("This is a checkpoint8\n");
     LoRaNetRouter.begin(thisNodeAddr);
-    Serial.printf("This is a checkpoint9\n");
 
     lmFail:
         return FAIL;
 }
 
-int
+void
 LoRaNetClass::beginPacket(const char *host)
 {
     // TODO: error checking
@@ -132,7 +128,7 @@ LoRaNetClass::write(const uint8_t *buffer, size_t size)
     return size;
 }
 
-int
+void
 LoRaNetClass::endPacket()
 {
     // TODO: error checking
@@ -143,8 +139,11 @@ LoRaNetClass::endPacket()
 void
 LoRaNetClass::run()
 {
+    Serial.printf("This is a checkpoint 20\n");
     LoRaNetSwitch.run(); 
+    Serial.printf("This is a checkpoint 21\n");
     LoRaNetRouter.run();
+    Serial.printf("This is a checkpoint 22\n");
 }
 
 

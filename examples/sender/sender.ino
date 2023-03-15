@@ -19,11 +19,8 @@ setup()
     // Serial.begin(115200);
     // fdev_setup_stream(&serial_stdout, serial_putchar, NULL, _FDEV_SETUP_WRITE);
     // stdout = &serial_stdout;
-    Serial.printf("This is a checkpoint1");
     LoRaNet.begin(BAND);
-    Serial.printf("This is a checkpoint8\n");
     LoRaNet.onReceive(handleMessage);
-
 }
 
 void 
@@ -50,14 +47,22 @@ handleMessage(int payloadSize, IPAddress srcAddr)
 void 
 loop()
 {
+    Serial.printf("This is a checkpoint 1\n");
     if (millis() - lastSentMsgTS > 5000) {
+        Serial.printf("This is a checkpoint 2\n");
         LoRaNet.beginPacket("10.105.154.79");
+        Serial.printf("This is a checkpoint 3\n");
         String message = "ping";
         Serial.println(message);
+        Serial.printf("This is a checkpoint 4\n");
         LoRaNet.write((uint8_t *) message.c_str(), strlen(message.c_str()));
+        Serial.printf("This is a checkpoint 5\n");
         LoRaNet.endPacket();
+        Serial.printf("This is a checkpoint 6\n");
         lastSentMsgTS = millis();
     }
+    Serial.printf("This is a checkpoint 10\n");    
     LoRaNet.run();
+    Serial.printf("This is a checkpoint 11\n");
 }
 

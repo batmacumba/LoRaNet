@@ -39,8 +39,8 @@ class LoRaNetSwitchClass {
     public:
         LoRaNetSwitchClass();
 
-        int     begin(uint8_t *addrp);
-        int     push(genericFrame dp, uint8_t type);
+        void     begin(uint8_t *addrp);
+        void     push(genericFrame dp, uint8_t type);
         void    acknowledge(uint8_t *dstAddr, uint8_t sequence);
         void    run();
 

@@ -136,22 +136,18 @@ LoRaNetSwitchClass::LoRaNetSwitchClass()
 
 
 
-int
+void
 LoRaNetSwitchClass::begin(uint8_t *addrp)
 {
     LOG("LoRaNetSwitch::begin: LoRaNet Switch initializing...\n");
-    Serial.printf("This is a checkpoint4\n");
     memcpy(thisNodeAddr, addrp, sizeof(thisNodeAddr));
-    Serial.printf("This is a checkpoint5\n");
     LoRa.onReceive(onReceive);
     LoRa.receive();
     LoRa.setSpreadingFactor(DEFAULT_SF);
-    Serial.printf("This is a checkpoint6\n");
     LOG("LoRaNetSwitch::begin: LoRaNet Switch successfully initialized\n");
-    Serial.printf("This is a checkpoint7\n");
 }
 
-int 
+void 
 LoRaNetSwitchClass::push(genericFrame gf, uint8_t type)
 {
     // TODO: should we handle frames sent to this same node?
@@ -211,6 +207,7 @@ int
 LoRaNetSwitchClass::handleQueueItem(queueItem *qi, uint8_t type, int qIndex)
 {
     // Header configuration
+    Serial.printf("This is a checkpoint 40\n");
     if (qi -> headerFilled == false) {
         uint8_t dstAddr[4];
         uint8_t *nextHop;
@@ -224,12 +221,15 @@ LoRaNetSwitchClass::handleQueueItem(queueItem *qi, uint8_t type, int qIndex)
         //     memcpy(dstAddr, broadcastAddr, 4);
         // else if (type == ROUTING && qi -> gf.ah.type == AODV_RREP_ACK)
         //     memcpy(dstAddr, qi -> gf.ah.rrepAck.dstAddr, 4);
-
+        Serial.printf("This is a checkpoint 41\n");        
         LoRaNetRouter.getNextHop((uint8_t *) &dstAddr, &nextHop);
+        Serial.printf("This is a checkpoint 42\n");
         
         // We don't know the next hop for the given destination
         if (nextHop == NULL) {
+            Serial.printf("This is a checkpoint 43\n");
             LoRaNetRouter.createRREQ(dstAddr);
+            Serial.printf("This is a checkpoint 44\n");
             return SUCCESS;
         }
         // We know the next hop for the given destination
@@ -282,40 +282,57 @@ LoRaNetSwitchClass::handleQueueItem(queueItem *qi, uint8_t type, int qIndex)
     // TODO: mutex aqui? ou desligar interrupts
     LOG("LoRaNetSwitch::handleQueueItem: writing to LoRa interface...\n");
     if (!LoRa.beginPacket()) return FAIL;
+    Serial.printf("This is a checkpoint 45\n");
     LoRa.write(buffer, bytesWritten);
+    Serial.printf("This is a checkpoint 46\n");
     if (!LoRa.endPacket()) return FAIL;
     LOG("LoRaNetSwitch::handleQueueItem: finished writing\n");
-
+    Serial.printf("This is a checkpoint 46.1\n");
     // Cleanup 
     // TODO: don't listen for ACKs for broadcasts
     if (type == DATA || type == ROUTING) {
+        Serial.printf("This is a checkpoint 46.2\n");
         qi -> lastSentAt = millis();
+        Serial.printf("This is a checkpoint 46.3\n");
         qi -> retries++;
+        Serial.printf("This is a checkpoint 46.4\n");
         listenForAckTS = millis();
         listenForAckSequence = qi -> gf.lh.sequence;
+        Serial.printf("This is a checkpoint 46.5\n");
         LOG("LoRaNetSwitch::handleQueueItem: listening for ACK...\n");
 
     }
     else if (type == CONTROL) {
+        Serial.printf("This is a checkpoint 46.6\n");
         if (qi -> gf.lh.subtype == CONTROL_ACK)
             list_del(frameQueue, qIndex);
     }
     // Broadcast frames should not be retransmitted
+    Serial.printf("This is a checkpoint 46.7\n");
+    Serial.printf("%x\n", IPAddress(broadcastAddr));
+    Serial.printf("%x\n", IPAddress(broadcastAddr).toString());
+    Serial.printf("%x\n", broadcastAddr);
+    Serial.printf("%x\n", qi -> gf.lh.dstAddr);
+    Serial.printf("%x\n", &qi -> gf.lh.dstAddr);
     if (IPAddress(qi -> gf.lh.dstAddr) == IPAddress(broadcastAddr)) 
         list_del(frameQueue, qIndex);
 
     LOG("LoRaNetSwitch::handleQueueItem: putting LoRa interface in receive mode...\n");
+    Serial.printf("This is a checkpoint 47\n");
     LoRa.receive();
+    Serial.printf("This is a checkpoint 48\n");
 }
 
 void
 LoRaNetSwitchClass::run()
 {
+    Serial.printf("This is a checkpoint 30\n");
     for (int i = 0 ; i < list_length(frameQueue); i++) {
         // LOG("LoRaNetSwitch::run: run %d\n", i);
         unsigned long now = millis();
         // If we just sent a DATA or ROUTING message, we must listen for ACK
         if (listenForAckTS > 0) {
+            Serial.printf("This is a checkpoint 31\n");          
             if (now - listenForAckTS < ACK_LISTEN_INTERVAL) return;
             else {
                 LOG("LoRaNetSwitch::run: Frame sequence number %d, ACK not received\n", 
@@ -324,17 +341,23 @@ LoRaNetSwitchClass::run()
                 listenForAckSequence = 0;
             }
         }
-
+        Serial.printf("This is a checkpoint 32\n");
         queueItem *qi = (queueItem *) list_get(frameQueue, i);
+        Serial.printf("This is a checkpoint 32.1\n");
         if (qi == NULL) continue;
 
         if (qi -> retries >= MAX_RETRIES) {
+            Serial.printf("This is a checkpoint 33\n");
             LOG("LoRaNetSwitch::run: Frame to destination %s, sequence %d, exceeded max retries\n", 
                 IPAddress(qi -> gf.lh.dstAddr).toString().c_str(), qi -> gf.lh.sequence);
             list_del(frameQueue, i); 
+            Serial.printf("This is a checkpoint 34\n");
         }
-        else if (now - qi -> lastSentAt > MAX_ACK_INTERVAL) 
+        else if (now - qi -> lastSentAt > MAX_ACK_INTERVAL) {
+            Serial.printf("This is a checkpoint 35.1\n");
             LoRaNetSwitch.handleQueueItem(qi, qi -> type, i);
+            Serial.printf("This is a checkpoint 35.2\n");
+        }        
     }
 }
 

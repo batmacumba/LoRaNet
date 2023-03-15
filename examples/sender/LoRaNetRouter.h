@@ -62,7 +62,7 @@ class LoRaNetRouterClass {
         // EXPERIMENT
         unsigned long    RREQ_TS = 0;
 
-        int             begin(uint8_t *addrp);
+        void             begin(uint8_t *addrp);
         void            createRREQ(uint8_t *dstAddr);
         void            handleRREQ(int packetSize, uint8_t *previousHop);
         void            forwardRREQ(rreqHeader rreq);

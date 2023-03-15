@@ -73,7 +73,7 @@ LoRaNetRouterClass::LoRaNetRouterClass()
     ht_set(routingTable, (char *) IPAddress(dstAddr2).toString().c_str(), re);
 }
 
-int
+void
 LoRaNetRouterClass::begin(uint8_t *addrp)
 {
     memcpy(thisNodeAddr, addrp, sizeof(thisNodeAddr));

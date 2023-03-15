@@ -19,8 +19,8 @@ class LoRaNetClass {
     public:
         LoRaNetClass();
         int begin(long frequency);
-        int beginPacket(const char *host);
-        int endPacket();
+        void beginPacket(const char *host);
+        void endPacket();
         size_t write(const uint8_t *buffer, size_t size);
         void onReceive(void(*callback) (int, IPAddress));
         void handlePacket(int packetSize);
