@@ -126,6 +126,7 @@ LoRaNetClass::write(const uint8_t *buffer, size_t size)
 
     memcpy(snd.payload + snd.nh.len, buffer, size);
     snd.nh.len += size;
+    Serial.println("LoRaNetClass::write finished");
     return size;
 }
 
@@ -134,7 +135,9 @@ LoRaNetClass::endPacket()
 {
     // TODO: error checking
     // TODO: use mutex below
+    Serial.println("LoRaNetClass::endPacket begin");
     LoRaNetSwitch.push(snd, DATA); 
+    Serial.println("LoRaNetClass::endPacket finished");
 }
 
 void

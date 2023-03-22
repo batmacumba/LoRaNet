@@ -97,6 +97,7 @@ list_resize(List *l, int new_allocated, int flag)
 static int
 list_mem_handler(List *l, int flag) 
 {
+    Serial.println("list_mem_handler start");
     int handler;
     /* full or empty */
     if (l -> n == l -> allocated) {
@@ -119,7 +120,7 @@ list_mem_handler(List *l, int flag)
     }
     /* error? */
     if (handler < 0)
-        // printf("list_mem_handler: error resizing list\n");
+        Serial.printf("list_mem_handler: error resizing list\n");
     return handler;
     
 }
@@ -131,15 +132,20 @@ list_mem_handler(List *l, int flag)
 inline int
 list_append(List *l, void *data, size_t dataSize) 
 {
+    Serial.println("list_append: start");
     if (list_mem_handler(l, APPEND) < 0) {
-        // printf("list_append: error handling memory\n");
+        Serial.printf("list_append: error handling memory\n");
         return -1;
     }
+    Serial.println("list_append: 1");
     /* allocates space on the heap and copies the data */
     l -> items[l -> zero + l -> n] = malloc(dataSize);
     // TODO: malloc error check
+    Serial.println("list_append: 2");
     memcpy(l -> items[l -> zero + l -> n], data, dataSize);
+    Serial.println("list_append: 3");
     l -> n++;
+    Serial.println("list_append: finish");
     return 0;
 }
 

@@ -35,11 +35,11 @@ handleMessage(int payloadSize, IPAddress srcAddr)
     for (int i = 0; i < payloadSize; i++) 
         message += (char) LoRa.read();
 
-    // Serial.print(message);
-    // Serial.print("' with RSSI ");
-    // Serial.print(LoRa.packetRssi());
-    // Serial.print(" from address ");
-    // Serial.println(srcAddr.toString());
+    Serial.print(message);
+    Serial.print("' with RSSI ");
+    Serial.print(LoRa.packetRssi());
+    Serial.print(" from address ");
+    Serial.println(srcAddr.toString());
     if (message == "ping") {
         message = "pong";
         Serial.println(message);
@@ -52,15 +52,17 @@ handleMessage(int payloadSize, IPAddress srcAddr)
 void 
 loop()
 {
-    if (millis() - lastSentMsgTS > 10000) {
-        Serial.printf("Sending message to 10.39.54.148\n");
-        String message = "ping";
-        Serial.println(message);
-        LoRaNet.beginPacket("10.39.54.148");
-        LoRaNet.write((uint8_t *) message.c_str(), strlen(message.c_str()));
-        LoRaNet.endPacket();
-        lastSentMsgTS = millis();
-    }
+    // if (millis() - lastSentMsgTS > 10000) {
+    //     Serial.printf("Sending message to 10.39.54.148\n");
+    //     String message = "ping";
+    //     Serial.println(message);
+    //     LoRaNet.beginPacket("10.39.54.148");
+    //     LoRaNet.write((uint8_t *) message.c_str(), strlen(message.c_str()));
+    //     Serial.println("check 1");
+    //     LoRaNet.endPacket();
+    //     lastSentMsgTS = millis();
+    //     Serial.println("message sent");
+    // }
     LoRaNet.run();
 }
 

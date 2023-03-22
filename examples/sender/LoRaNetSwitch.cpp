@@ -11,7 +11,7 @@
 #include "util/list.h"
 
 #define MAX_ACK_INTERVAL 2400
-#define ACK_LISTEN_INTERVAL 2000
+#define ACK_LISTEN_INTERVAL 5000
 #define MAX_RETRIES 3
 #define DEFAULT_SF 7
 
@@ -42,11 +42,11 @@ void populateRoutingTable() {
   // ht_set(nextHopTable, (char *) dst, fakeEntry2);
 
   // BROADCAST - DO NOT REMOVE
-  char *dst = "10.255.255.255";
-  nextHopEntry *broadcast = (nextHopEntry *) malloc(sizeof(nextHopEntry));
-  broadcast -> address[0] = 10; broadcast -> address[1] = 255; broadcast -> address[2] = 255; broadcast -> address[3] = 255;
-  broadcast -> nextHop[0] = 10; broadcast -> nextHop[1] = 255; broadcast -> nextHop[2] = 255; broadcast -> nextHop[3] = 255;
-  ht_set(nextHopTable, (char *) dst, broadcast);
+  // char *dst = "10.255.255.255";
+  // nextHopEntry *broadcast = (nextHopEntry *) malloc(sizeof(nextHopEntry));
+  // broadcast -> address[0] = 10; broadcast -> address[1] = 255; broadcast -> address[2] = 255; broadcast -> address[3] = 255;
+  // broadcast -> nextHop[0] = 10; broadcast -> nextHop[1] = 255; broadcast -> nextHop[2] = 255; broadcast -> nextHop[3] = 255;
+  // ht_set(nextHopTable, (char *) dst, broadcast);
 }
 
 void onReceive(int packetSize) {
@@ -149,8 +149,9 @@ void LoRaNetSwitchClass::push(genericFrame gf, uint8_t type) {
   if (type == CONTROL) qi.headerFilled = true;
   else qi.headerFilled = false;
 
-  // Serial.printf("LoRaNetSwitch::push: Adding new frame to frameQueue\n");
+  Serial.printf("LoRaNetSwitch::push: Adding new frame to frameQueue\n");
   list_append(frameQueue, &qi, sizeof(qi));
+  Serial.printf("LoRaNetSwitch::push: Frame added to queue - Type: %d\n", qi.type);
 }
 
 void LoRaNetSwitchClass::acknowledge(uint8_t *dstAddr, uint8_t sequence) {
