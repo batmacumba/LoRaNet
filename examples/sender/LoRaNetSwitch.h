@@ -39,13 +39,13 @@ class LoRaNetSwitchClass {
     public:
         LoRaNetSwitchClass();
 
-        void     begin(uint8_t *addrp);
-        void     push(genericFrame dp, uint8_t type);
+        void    begin(uint8_t *addrp);
+        void    push(genericFrame dp, uint8_t type);
         void    acknowledge(uint8_t *dstAddr, uint8_t sequence);
         void    run();
 
     private:
-        int     handleQueueItem(queueItem *qi, uint8_t type, int qIndex);
+        void    handleQueueItem(queueItem *qi, uint8_t type, int qIndex);
         uint8_t getNextSequence(uint8_t *address);
 };
 

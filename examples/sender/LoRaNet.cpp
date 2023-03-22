@@ -32,22 +32,22 @@ void
 LoRaNetClass::handlePacket(int packetSize)
 {
     if (packetSize < sizeof(networkHeader)) {
-        LOG("LoRaNet::handlePacket: Packet is too short!\n");
+        // Serial.printf("LoRaNet::handlePacket: Packet is too short!\n");
         return;
     }
 
     // TODO: check remaining packet size
-    LOG("LoRaNet::handlePacket: Data message received\n");
+    // Serial.printf("LoRaNet::handlePacket: Data message received\n");
     for (int i = 0; i < sizeof(rcv.nh); i++) 
         *(((uint8_t*) &rcv.nh) + i) = (uint8_t) LoRa.read();
-    LOG("LoRaNet::handlePacket: Network layer header parsed successfully\n");
+    // Serial.printf("LoRaNet::handlePacket: Network layer header parsed successfully\n");
 
     if (IPAddress(rcv.nh.dstAddr) == IPAddress(thisNodeAddr)) {
         if (_onReceive) 
             _onReceive(packetSize - sizeof(rcv.nh), IPAddress(rcv.nh.srcAddr));
     }
     else {
-        LOG("LoRaNet::handlePacket: Message addressed to another node, forwarding...\n");
+        // Serial.printf("LoRaNet::handlePacket: Message addressed to another node, forwarding...\n");
         for (int i = 0; i < rcv.nh.len; i++)
             *(((uint8_t*) &rcv.payload) + i) = (uint8_t) LoRa.read();
         // TODO: check if remaining packetsize is good 
@@ -61,7 +61,8 @@ LoRaNetClass::handlePacket(int packetSize)
     }
 }
 
-int
+// int
+void
 LoRaNetClass::begin(long frequency)
 {
     // TODO: return SUCCESS or FAIL
@@ -72,32 +73,32 @@ LoRaNetClass::begin(long frequency)
 
     // TODO: PADBOOST?
     if (!LoRa.begin(frequency, true)) {
-        LOG("LoRaNet::begin: LoRa startup failed!\n");
-        goto lmFail;
+        Serial.printf("LoRaNet::begin: LoRa startup failed!\n");
+        // goto lmFail;
     }
     else {
-        LOG("LoRaNet::begin: LoRa startup successful.\n");
+        Serial.printf("LoRaNet::begin: LoRa startup successful.\n");
     }
 
     // Address recovery
     if (!EEPROM.begin(EEPROM_SIZE)) {
-        LOG("LoRaNet::begin: EEPROM initialization failed!\n");
-        goto lmFail;
+        Serial.printf("LoRaNet::begin: EEPROM initialization failed!\n");
+        // goto lmFail;
     }
     else
-        LOG("LoRaNet::begin: EEPROM initialized!\n");
+        Serial.printf("LoRaNet::begin: EEPROM initialized!\n");
 
     if (eepromConfigured()) eepromRead(thisNodeAddr);
     else eepromSetup(thisNodeAddr);
     for (int i=0; i<4; i++){
       Serial.printf("%u.", thisNodeAddr[i]);
     }
-    Serial.printf("\n%u\n", thisNodeAddr);
+    Serial.printf("\n");
     LoRaNetSwitch.begin(thisNodeAddr);
     LoRaNetRouter.begin(thisNodeAddr);
 
-    lmFail:
-        return FAIL;
+    // lmFail:
+    //     return FAIL;
 }
 
 void
@@ -139,11 +140,8 @@ LoRaNetClass::endPacket()
 void
 LoRaNetClass::run()
 {
-    Serial.printf("This is a checkpoint 20\n");
     LoRaNetSwitch.run(); 
-    Serial.printf("This is a checkpoint 21\n");
     LoRaNetRouter.run();
-    Serial.printf("This is a checkpoint 22\n");
 }
 
 

@@ -51,7 +51,7 @@ list_new()
 {
     List *l = (List *) malloc(sizeof(List));
     if (!l) {
-        printf("list_new: cannot create new list!\n");
+        // printf("list_new: cannot create new list!\n");
         return NULL;
     }
     l -> items = NULL;
@@ -80,7 +80,7 @@ list_resize(List *l, int new_allocated, int flag)
     }
     /* error checking and variable updating */
     if (!new_items) {
-        printf("list_resize: cannot resize list\n");
+        // printf("list_resize: cannot resize list\n");
         return -1;
     }
     // TODO: free no ponteiro l -> items anterior?
@@ -119,7 +119,7 @@ list_mem_handler(List *l, int flag)
     }
     /* error? */
     if (handler < 0)
-        printf("list_mem_handler: error resizing list\n");
+        // printf("list_mem_handler: error resizing list\n");
     return handler;
     
 }
@@ -132,7 +132,7 @@ inline int
 list_append(List *l, void *data, size_t dataSize) 
 {
     if (list_mem_handler(l, APPEND) < 0) {
-        printf("list_append: error handling memory\n");
+        // printf("list_append: error handling memory\n");
         return -1;
     }
     /* allocates space on the heap and copies the data */
@@ -151,7 +151,7 @@ inline int
 list_prepend(List *l, void *data, size_t dataSize) 
 {
     if (list_mem_handler(l, PREPEND) < 0) {
-        printf("list_prepend: error handling memory\n");
+        // printf("list_prepend: error handling memory\n");
         return -1;
     }
     /* allocates space on the heap and copies the data */
@@ -185,7 +185,7 @@ list_get(List *l, int i)
 {
     i = index_handler(l, i);
     if (i < 0) {
-        printf("list_get: index out of range\n");
+        // printf("list_get: index out of range\n");
         return NULL;
     }
     return l -> items[i];
@@ -200,14 +200,14 @@ list_set(List *l, int i, void *data, size_t dataSize)
 {
     i = index_handler(l, i);
     if (i < 0) {
-        printf("list_set: index out of range\n");
+        // printf("list_set: index out of range\n");
         return -1;
     }
     
     if (l -> items[i]) free(l -> items[i]);
     l -> items[i] = malloc(dataSize);
     if (!l -> items[i]) {
-        printf("list_set: cannot allocate space\n");
+        // printf("list_set: cannot allocate space\n");
         return -1;
     }
     /* finally copies the data and returns */
@@ -221,7 +221,8 @@ list_del(List *l, int i)
     // TODO: mem_handler checar se precisa resize
     i = index_handler(l, i);
     if (i < 0) {
-        printf("list_del: index out of range\n");
+        printf("%d\n", i);
+        // printf("list_del: index out of range\n");
         return -1;
     }
     if (l -> items[i]) {

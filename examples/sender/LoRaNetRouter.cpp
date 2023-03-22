@@ -1,3 +1,4 @@
+#include "HardwareSerial.h"
 /*
   LoRaNetRouter.cpp
   Created by Bruno Carneiro
@@ -47,7 +48,7 @@ compareAddrAndID(void *a, void *b)
 
 LoRaNetRouterClass::LoRaNetRouterClass()
 {
-    Serial.printf("Does this run??\n");
+    // Serial.printf("Does this run??\n");
     // EXPERIMENT
     uint8_t dstAddr[4] = {10, 7, 97, 46};
     uint8_t previousHop[4] = {10, 7, 97, 46};
@@ -76,7 +77,9 @@ LoRaNetRouterClass::LoRaNetRouterClass()
 void
 LoRaNetRouterClass::begin(uint8_t *addrp)
 {
+    Serial.printf("LoRaNetRouter::begin: LoRaNet Router initializing...\n");
     memcpy(thisNodeAddr, addrp, sizeof(thisNodeAddr));
+    Serial.printf("LoRaNetRouter::begin: LoRaNet Router successfully initialized\n");
 }
 
 
@@ -91,7 +94,7 @@ LoRaNetRouterClass::createRREQ(uint8_t *dstAddr)
     memcpy(tmp.dstAddr, dstAddr, 4);
     if (list_contains(rreqBuffer, (void *) &tmp, compareAddr)) return;
 
-    LOG("LoRaNetRouter::createRREQ: creating RREQ for destination %s\n", 
+    Serial.printf("LoRaNetRouter::createRREQ: creating RREQ for destination %s\n", 
         IPAddress(dstAddr).toString().c_str());
 
     genericFrame gf;
@@ -129,12 +132,12 @@ void
 LoRaNetRouterClass::handleRREQ(int packetSize, uint8_t *previousHop)
 {
     if (packetSize < sizeof(rreqHeader)) {
-        LOG("LoRaNetRouter::handleRREQ: Packet is too short!\n");
+        // Serial.printf("LoRaNetRouter::handleRREQ: Packet is too short!\n");
         return;
     }
 
     // TODO: check remaining packet size
-    LOG("LoRaNetRouter::handleRREQ: RREQ message received\n");
+    // Serial.printf("LoRaNetRouter::handleRREQ: RREQ message received\n");
     rreqHeader rreq;
     for (int i = 0; i < sizeof(rreq); i++) 
         *(((uint8_t*) &rreq) + i) = (uint8_t) LoRa.read();
@@ -158,7 +161,7 @@ LoRaNetRouterClass::handleRREQ(int packetSize, uint8_t *previousHop)
     memcpy(tmp.dstAddr, rreq.dstAddr, 4);
     tmp.rreqID = rreq.rreqID;
     if (list_contains(rreqBuffer, (void *) &tmp, compareAddrAndID)) {
-        LOG("LoRaNetRouter::handleRREQ: RREQ message is already in buffer! Discarding...\n");
+        // Serial.printf("LoRaNetRouter::handleRREQ: RREQ message is already in buffer! Discarding...\n");
         return;
     }
 
@@ -201,12 +204,12 @@ void
 LoRaNetRouterClass::forwardRREQ(rreqHeader rreq)
 {
     if (rreq.hopCount > NET_DIAMETER) {
-        LOG("LoRaNetRouter::forwardRREQ: hopCount is higher than NET_DIAMETER! Discarding...\n");
+        // Serial.printf("LoRaNetRouter::forwardRREQ: hopCount is higher than NET_DIAMETER! Discarding...\n");
         return;
     }
 
-    LOG("LoRaNetRouter::forwardRREQ: forwarding RREQ to destination %s\n", 
-        IPAddress(rreq.dstAddr).toString().c_str());
+    // Serial.printf("LoRaNetRouter::forwardRREQ: forwarding RREQ to destination %s\n", 
+        // IPAddress(rreq.dstAddr).toString().c_str());
 
     genericFrame gf;
     gf.ah.type = AODV_RREQ;
@@ -219,8 +222,8 @@ LoRaNetRouterClass::forwardRREQ(rreqHeader rreq)
 void
 LoRaNetRouterClass::createRREP(rreqHeader rreq, bool thisNodeIsDestination)
 {
-    LOG("LoRaNetRouter::createRREP: creating RREP for originator %s\n", 
-        IPAddress(rreq.originAddr).toString().c_str());
+    // Serial.printf("LoRaNetRouter::createRREP: creating RREP for originator %s\n", 
+    //     IPAddress(rreq.originAddr).toString().c_str());
 
     genericFrame gf;
     gf.ah.type = AODV_RREP;
@@ -249,17 +252,17 @@ void
 LoRaNetRouterClass::handleRREP(int packetSize, uint8_t *previousHop)
 {
     if (packetSize < sizeof(rrepHeader)) {
-        LOG("LoRaNetRouter::handleRREP: Packet is too short!\n");
+        // Serial.printf("LoRaNetRouter::handleRREP: Packet is too short!\n");
         return;
     }
 
     // TODO: check remaining packet size
-    LOG("LoRaNetRouter::handleRREP: RREP message received\n");
+    // Serial.printf("LoRaNetRouter::handleRREP: RREP message received\n");
     rrepHeader rrep;
     for (int i = 0; i < sizeof(rrep); i++) 
         *(((uint8_t*) &rrep) + i) = (uint8_t) LoRa.read();
-    LOG("LoRaNetRouter::handleRREP: handling RREP from destination %s\n", 
-        IPAddress(rrep.dstAddr).toString().c_str());
+    // Serial.printf("LoRaNetRouter::handleRREP: handling RREP from destination %s\n", 
+        // IPAddress(rrep.dstAddr).toString().c_str());
 
     // Creates a route to previous hop
     routingEntry *re = LoRaNetRouter.getRoute(previousHop);
@@ -314,12 +317,11 @@ void
 LoRaNetRouterClass::forwardRREP(rrepHeader rrep)
 {
     if (rrep.hopCount > NET_DIAMETER) {
-        LOG("LoRaNetRouter::forwardRREP: hopCount is higher than NET_DIAMETER! Discarding...\n");
+        // Serial.printf("LoRaNetRouter::forwardRREP: hopCount is higher than NET_DIAMETER! Discarding...\n");
         return;
     }
 
-    LOG("LoRaNetRouter::forwardRREP: forwarding RREP to origin %s\n", 
-        IPAddress(rrep.originAddr).toString().c_str());
+    // Serial.printf("LoRaNetRouter::forwaring().c_str());
 
     genericFrame gf;
     gf.ah.type = AODV_RREP;
@@ -330,13 +332,14 @@ LoRaNetRouterClass::forwardRREP(rrepHeader rrep)
 void
 LoRaNetRouterClass::handlePacket(int packetSize, uint8_t *previousHop)
 {
+    Serial.printf("Interrupting from router\n");
     if (packetSize < 1) {
-        LOG("LoRaNetRouter::handlePacket: Packet is too short!\n");
+        // Serial.printf("LoRaNetRouter::handlePacket: Packet is too short!\n");
         return;
     }
 
     // TODO: check remaining packet size
-    LOG("LoRaNetRouter::handlePacket: Routing message received\n");
+    // Serial.printf("LoRaNetRouter::handlePacket: Routing message received\n");
     uint8_t type = (uint8_t) LoRa.read();
     if (type == AODV_RREQ) LoRaNetRouter.handleRREQ(packetSize - 1, previousHop); 
     else if (type == AODV_RREP) LoRaNetRouter.handleRREP(packetSize - 1, previousHop); 
@@ -365,9 +368,10 @@ LoRaNetRouterClass::getNextHop(uint8_t *dstAddr, uint8_t **nextHop)
 void
 LoRaNetRouterClass::run()
 {
+    // Serial.printf("LoRaNetRouter::run: Running...\n");  
     // TODO: discard stale routes?
     for (int i = 0 ; i < list_length(rreqBuffer); i++) {
-        // LOG("LoRaNetRouter::run: run %d\n", i);
+        // Serial.printf("LoRaNetRouter::run: run %d\n", i);
         unsigned long now = millis();
         rreqBufferEntry *rbEntry = (rreqBufferEntry *) list_get(rreqBuffer, i);
         if (rbEntry == NULL) continue;
@@ -375,6 +379,7 @@ LoRaNetRouterClass::run()
         if (now - rbEntry -> timestamp > PATH_DISCOVERY_TIME) 
             list_del(rreqBuffer, i);
     }
+    // Serial.printf("LoRaNetRouter::run: Run complete\n"); 
 }
 
 void

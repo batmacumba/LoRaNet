@@ -1,7 +1,8 @@
 #include "LoRaNet.h"
 #include "boards.h"
 
-#define BAND    433E6 
+#define BAND    868E6 
+// #define BAND    433E6 
 
 int i = 0;
 unsigned long lastSentMsgTS = 0;
@@ -21,6 +22,10 @@ setup()
     // stdout = &serial_stdout;
     LoRaNet.begin(BAND);
     LoRaNet.onReceive(handleMessage);
+    LoRa.setCodingRate4(5);
+    LoRa.setSpreadingFactor(7);
+    LoRa.setSignalBandwidth(250E3);
+    Serial.printf("Setup Complete\n");
 }
 
 void 
@@ -30,11 +35,11 @@ handleMessage(int payloadSize, IPAddress srcAddr)
     for (int i = 0; i < payloadSize; i++) 
         message += (char) LoRa.read();
 
-    Serial.print(message);
-    Serial.print("' with RSSI ");
-    Serial.print(LoRa.packetRssi());
-    Serial.print(" from address ");
-    Serial.println(srcAddr.toString());
+    // Serial.print(message);
+    // Serial.print("' with RSSI ");
+    // Serial.print(LoRa.packetRssi());
+    // Serial.print(" from address ");
+    // Serial.println(srcAddr.toString());
     if (message == "ping") {
         message = "pong";
         Serial.println(message);
@@ -47,22 +52,15 @@ handleMessage(int payloadSize, IPAddress srcAddr)
 void 
 loop()
 {
-    Serial.printf("This is a checkpoint 1\n");
-    if (millis() - lastSentMsgTS > 5000) {
-        Serial.printf("This is a checkpoint 2\n");
-        LoRaNet.beginPacket("10.105.154.79");
-        Serial.printf("This is a checkpoint 3\n");
+    if (millis() - lastSentMsgTS > 10000) {
+        Serial.printf("Sending message to 10.39.54.148\n");
         String message = "ping";
         Serial.println(message);
-        Serial.printf("This is a checkpoint 4\n");
+        LoRaNet.beginPacket("10.39.54.148");
         LoRaNet.write((uint8_t *) message.c_str(), strlen(message.c_str()));
-        Serial.printf("This is a checkpoint 5\n");
         LoRaNet.endPacket();
-        Serial.printf("This is a checkpoint 6\n");
         lastSentMsgTS = millis();
     }
-    Serial.printf("This is a checkpoint 10\n");    
     LoRaNet.run();
-    Serial.printf("This is a checkpoint 11\n");
 }
 
