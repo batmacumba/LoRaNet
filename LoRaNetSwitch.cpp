@@ -19,6 +19,7 @@ static uint8_t          thisNodeAddr[4];
 static uint8_t          broadcastAddr[4] = {10, 255, 255, 255};
 static List             *frameQueue = list_new();        
 static hashtable_t      *neighbors = ht_create(16);
+static hashtable_t      *nextHopTable = ht_create(16);
 static unsigned long    listenForAckTS = 0;
 static uint8_t          listenForAckSequence;
 
@@ -43,11 +44,11 @@ populateRoutingTable()
     // ht_set(nextHopTable, (char *) dst, fakeEntry2);
 
     // BROADCAST - DO NOT REMOVE
-    // char *dst = "10.255.255.255";
-    // nextHopEntry *broadcast = (nextHopEntry *) malloc(sizeof(nextHopEntry));
-    // broadcast -> address[0] = 10; broadcast -> address[1] = 255; broadcast -> address[2] = 255; broadcast -> address[3] = 255;
-    // broadcast -> nextHop[0] = 10; broadcast -> nextHop[1] = 255; broadcast -> nextHop[2] = 255; broadcast -> nextHop[3] = 255; 
-    // ht_set(nextHopTable, (char *) dst, broadcast);
+    char *dst = "10.255.255.255";
+    nextHopEntry *broadcast = (nextHopEntry *) malloc(sizeof(nextHopEntry));
+    broadcast -> address[0] = 10; broadcast -> address[1] = 255; broadcast -> address[2] = 255; broadcast -> address[3] = 255;
+    broadcast -> nextHop[0] = 10; broadcast -> nextHop[1] = 255; broadcast -> nextHop[2] = 255; broadcast -> nextHop[3] = 255; 
+    ht_set(nextHopTable, (char *) dst, broadcast);
 }
 
 void
